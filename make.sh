@@ -9,7 +9,10 @@ if [ ! -d "MAKE" ]
 then
 	mkdir MAKE
 fi
-
+if [ ! -d "bin" ]
+then
+	mkdir bin
+fi
 ##########################
 ##  write new makefile  ##
 ##########################
@@ -52,7 +55,9 @@ done
 ############
 ##  make  ##
 ############
-make
+make \
+&& \
+mv ${MAIN}.out ./bin/2ru
 
 #######################
 ##  delete .o files  ##
