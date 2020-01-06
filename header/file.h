@@ -3,35 +3,29 @@
 
 #include <stdlib.h>
 #include <stdio.h>
+#include "const.h"
+
 class FileIO
 {
 	private:
-		FILE *input1  ;
-		FILE *input2  ;
-		FILE *output1 ;
-		FILE *output2 ;
-		int input1_check ;
-		int input2_check ;
-		int output1_check ;
-		int output2_check ;
-		int input1_line_num ;
-		int input2_line_num ;
+		FILE *fp_input[OPEN_FILE_NUM] ;
+		FILE *fp_output[OPEN_FILE_NUM] ;
+		bool input_check_open[OPEN_FILE_NUM] ;
+		bool output_check_open[OPEN_FILE_NUM] ;
+		int input_line_num[OPEN_FILE_NUM] ;
+		int output_line_num[OPEN_FILE_NUM] ;
 	public:
 		FileIO() ;
-		bool set_Input_File1(const char *file_name) ;
-		bool set_Input_File2(const char *file_name) ;
-		char *get_Input_FileName() ;
-		bool set_Output_File1(const char *file_name) ; 
-		bool set_Output_File2(const char *file_name) ; 
-		char *get_Output_FileName() ;
+		~FileIO() ;
+		bool set_Input_File(int filenum, const char *file_name) ;
+		char *get_Input_FileName(int filenum) ;
+		bool set_Output_File(int filenum, const char *file_name) ;
+		char *get_Output_FileName(int filenum) ;
 		bool close_Files() ; 
-		FILE *get_Input_File1() ;
-		FILE *get_Input_File2() ;
-		FILE *get_Output_File1() ;
-		FILE *get_Output_File2() ;
+		FILE *get_Input_File(int filenum) ;
+		FILE *get_Output_File(int filenum) ;
 		int  setLine(const char *file_name) ;
-		int  get_LineNum_Input_File1() ;
-		int  get_LineNum_Input_File2() ;
+		int  get_LineNum_Input_File(int filenum) ;
 } ;
 
 #endif

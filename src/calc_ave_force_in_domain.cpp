@@ -7,49 +7,49 @@ void Calc_Ave_Force_In_Domain::do_Calc_Ave_Force_In_Domain(Run_Manager mr, FileI
 {
 	Calc_Ave_Force_In_Domain analysis ;
 
-	if( fp.set_Input_File1("domain.dat") )
+	if( fp.set_Input_File(1,"domain.dat") )
 	{
 		printf("\nInput file1 = domain.dat\n") ;
 	}
-	analysis.set_Domain_From_File(fp.get_Input_File1()) ;
+	analysis.set_Domain_From_File(fp.get_Input_File(1)) ;
 	fp.close_Files() ;
 
 	//if( fp.set_Input_File1(argv[1]) )
-	if( fp.set_Input_File1(mr.get_argument(2)) )
+	if( fp.set_Input_File(1,mr.get_argument(2)) )
 	{
 		printf("\nInput file1 = %s\n",mr.get_argument(2)) ;
 	}
 
-	if( fp.set_Input_File2(mr.get_argument(3)) )
+	if( fp.set_Input_File(2,mr.get_argument(3)) )
 	{
 		printf("\nInput file2= %s\n",mr.get_argument(3)) ;
 	}
 
-	if( fp.set_Output_File1(mr.get_argument(4)) )
+	if( fp.set_Output_File(1,mr.get_argument(4)) )
 	{
 		printf("\nOutput file1 = %s\n",mr.get_argument(4)) ;
 	}
 
 //	printf("\n\n\nframe_max=%d\n\n\n",fp.get_LineNum_Input_File1()-1) ; //DEBUG
-	int frame_max = fp.get_LineNum_Input_File1() - 1 ;
-	analysis.Check_Domain(fp.get_Input_File1(),fp.get_Output_File1(),frame_max) ;
+	int frame_max = fp.get_LineNum_Input_File(1) - 1 ;
+	analysis.Check_Domain(fp.get_Input_File(1),fp.get_Output_File(1),frame_max) ;
 	fp.close_Files() ;
 
-	if( fp.set_Input_File1(mr.get_argument(4)) )
+	if( fp.set_Input_File(1,mr.get_argument(4)) )
 	{
 		printf("\nInput file1 = %s\n",mr.get_argument(4)) ;
 	}
 
-	if( fp.set_Input_File2(mr.get_argument(3)) )
+	if( fp.set_Input_File(2,mr.get_argument(3)) )
 	{
 		printf("\nInput file2= %s\n",mr.get_argument(3)) ;
 	}
 
-	if( fp.set_Output_File1(mr.get_argument(5)) )
+	if( fp.set_Output_File(1,mr.get_argument(5)) )
 	{
 		printf("\nOutput file1 = %s\n\n",mr.get_argument(5)) ;
 	}
-	analysis.do_calc(fp.get_Input_File1(),fp.get_Input_File2(),fp.get_Output_File1(),frame_max,1000) ;
+	analysis.do_calc(fp.get_Input_File(1),fp.get_Input_File(2),fp.get_Output_File(1),frame_max,1000) ;
 	fp.close_Files() ;
 
 	return ;

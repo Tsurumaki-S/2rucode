@@ -6,12 +6,12 @@
 //void Format_Gro::format_Gro(FILE *fp_input, FILE *fp_output, int atom_num_max)
 void Format_Gro::format_Gro(Run_Manager mr, FileIO fp)
 {
-	if( fp.set_Input_File1(mr.get_argument(2)) )
+	if( fp.set_Input_File(1,mr.get_argument(2)) )
 	{
 		printf("\nInput file1 = %s\n",mr.get_argument(2)) ;
 	}
 
-	if( fp.set_Output_File1(mr.get_argument(3)) )
+	if( fp.set_Output_File(1,mr.get_argument(3)) )
 	{
 		printf("\nOutput file1 = %s\n",mr.get_argument(3)) ;
 	}
@@ -25,13 +25,13 @@ void Format_Gro::format_Gro(Run_Manager mr, FileIO fp)
 	int  atom_num ;
 	double r[XYZ] ;
 
-	FILE *fp_input = fp.get_Input_File1() ;
-	FILE *fp_output = fp.get_Output_File1() ;
+	FILE *fp_input = fp.get_Input_File(1) ;
+	FILE *fp_output = fp.get_Output_File(1) ;
 
 	int atom_num_modified = 1 ;
 	int frame = 1 ;
 
-	int atom_num_max = fp.get_LineNum_Input_File1() - 3 ;
+	int atom_num_max = fp.get_LineNum_Input_File(1) - 3 ;
 
 //	/* skip 1st and 2nd line */
 //	while(fgetc(fp_input) != '\n');

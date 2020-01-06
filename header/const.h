@@ -9,4 +9,6 @@
 
 #define BUFMAX_CHAR 512
 
+#define OPEN_FILE_NUM 32
+
 #endif
