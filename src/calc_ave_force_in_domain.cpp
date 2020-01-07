@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include "../header/const.h"
 #include "../header/calc_ave_force_in_domain.h"
 #include "../header/file.h"
@@ -6,6 +7,9 @@
 void Calc_Ave_Force_In_Domain::do_Calc_Ave_Force_In_Domain(Run_Manager mr, FileIO fp)
 {
 	Calc_Ave_Force_In_Domain analysis ;
+
+	
+	analysis.set_Dt(atof(mr.get_argument(6))) ;
 
 	if( fp.set_Input_File(1,"domain.dat") )
 	{
@@ -108,10 +112,11 @@ void Calc_Ave_Force_In_Domain::Check_Domain(FILE *fp_input_pos, FILE *fp_indomai
 		fprintf(fp_indomain,"%d\n",frame-start_frame_in_domain) ;
 	}
 
-	printf("\nframe num in the domain = %d  (%.1f\%)\n\n",in_domain_num,((double)in_domain_num)/((double)frame_max)*100.0) ;
+	printf("\nframe num in the domain = %d\t[frame] (%.1f\%)",in_domain_num,((double)in_domain_num)/((double)frame_max)*100.0) ;
+	printf("\n                        = %f\t[ps]",in_domain_num*dt) ;
+	printf("\n                        = %f\t[ns]",in_domain_num*dt/1000.0) ;
 
 	return ;
-
 }
 
 void Calc_Ave_Force_In_Domain::set_Domain(double x_min,double y_min,double z_min,double x_max,double y_max,double z_max)
@@ -124,6 +129,12 @@ void Calc_Ave_Force_In_Domain::set_Domain(double x_min,double y_min,double z_min
 	r_max[Y] = y_max ;
 	r_max[Z] = z_max ;
 
+	return ;
+}
+
+void Calc_Ave_Force_In_Domain::set_Dt(double time)
+{
+	dt = time ;
 	return ;
 }
 
