@@ -1,6 +1,7 @@
 #include "../header/file.h"
 #include <stdlib.h>
 #include <stdio.h>
+#include <string.h>
 
 FileIO::FileIO()
 {
@@ -25,6 +26,27 @@ bool FileIO::set_Input_File(int filenum, const char *file_name)
 	if( fp_input[filenum]=fopen(file_name,"r") )
 	{
 		input_check_open[filenum] = 1 ;
+		strcpy(input_filename[filenum],file_name) ;
+		return true ;
+	}
+	else
+	{
+		fprintf(stderr,"\n  ERROR: Can not open the file \"%s\"\n\n",file_name) ;
+		exit(1) ;
+	}
+}
+
+char* FileIO::get_Input_FileName(int filenum)
+{
+	return input_filename[filenum] ;
+}
+
+bool FileIO::set_Output_File(int filenum, const char *file_name)
+{
+	if( fp_output[filenum]=fopen(file_name,"w") )
+	{
+		output_check_open[filenum] = 1 ;
+		strcpy(output_filename[filenum],file_name) ;
 		return true ;
 	}
 	else
@@ -34,18 +56,9 @@ bool FileIO::set_Input_File(int filenum, const char *file_name)
 	}
 }
 
-bool FileIO::set_Output_File(int filenum, const char *file_name)
+char* FileIO::get_Output_FileName(int filenum)
 {
-	if( fp_output[filenum]=fopen(file_name,"w") )
-	{
-		output_check_open[filenum] = 1 ;
-		return true ;
-	}
-	else
-	{
-		fprintf(stderr,"\nERROR!\nCan not open the file \"%s\"\n",file_name) ;
-		exit(1) ;
-	}
+	return output_filename[filenum] ;
 }
 
 bool FileIO::close_Files()
@@ -74,6 +87,11 @@ FILE* FileIO::get_Input_File(int filenum)
 	{
 		return fp_input[filenum] ;
 	}
+	else
+	{
+		fprintf(stderr,"\nERROR!\nCan not open the file \"%s\"\n",input_filename[filenum]) ;
+		exit(1) ;
+	}
 }
 
 FILE* FileIO::get_Output_File(int filenum)
@@ -81,6 +99,11 @@ FILE* FileIO::get_Output_File(int filenum)
 	if(output_check_open[filenum])
 	{
 		return fp_output[filenum] ;
+	}
+	else
+	{
+		fprintf(stderr,"\nERROR!\nCan not open the file \"%s\"\n",output_filename[filenum]) ;
+		exit(1) ;
 	}
 }
 

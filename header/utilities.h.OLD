@@ -1,5 +1,0 @@
-class MyFunction
-{
-	public:
-		int getLine(char *file_name) ;
-} ;

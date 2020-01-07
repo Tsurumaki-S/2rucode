@@ -19,8 +19,8 @@ bool Run_Manager::loadAnalyMode(const char *mode_char) {
     if (analy_tag.converter.find(mode_char) != analy_tag.converter.end()) {
         mode = analy_tag.converter[mode_char];
     } else {
-        printf("\nError: Incorrect argument.\n");
-        return false;
+        printf("\n  Error: Incorrect argument.\n\n");
+		exit(1) ;
     }
 
     return true;
