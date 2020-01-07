@@ -8,6 +8,7 @@
 #define XYZ 3
 
 #define BUFMAX_CHAR 512
+#define BUFMAX_CHAR_LARGE 1024
 
 #define OPEN_FILE_NUM 32
 

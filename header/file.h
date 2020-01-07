@@ -14,6 +14,8 @@ class FileIO
 		bool output_check_open[OPEN_FILE_NUM] ;
 		int input_line_num[OPEN_FILE_NUM] ;
 		int output_line_num[OPEN_FILE_NUM] ;
+		char input_filename[OPEN_FILE_NUM][BUFMAX_CHAR_LARGE] ;
+		char output_filename[OPEN_FILE_NUM][BUFMAX_CHAR_LARGE] ;
 	public:
 		FileIO() ;
 		~FileIO() ;
