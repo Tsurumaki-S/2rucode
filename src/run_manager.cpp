@@ -34,6 +34,12 @@ bool Run_Manager::doAnaly(Run_Manager mr, FileIO fp)
 		Calc_Ave_Force_In_Domain analy ;
 		analy.do_Calc_Ave_Force_In_Domain(mr,fp) ;
 	}
+	else if (mode==analy_tag.converter["avefrc_gather"])
+	{
+		printf("\nmode = avefrc_gather (%d)\n"     ,mode) ;
+		Calc_Ave_Force_In_Domain analy ;
+		analy.do_Gather_Data(mr,fp) ;
+	}
 	else if (mode==analy_tag.converter["format_gro"])
 	{
 		printf("\nmode = format_gro (%d)\n"     ,mode) ;

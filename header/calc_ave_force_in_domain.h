@@ -17,7 +17,7 @@ class Calc_Ave_Force_In_Domain
 		void set_Dt(double time) ;
 		void set_Domain_From_File(FILE *input) ;
 		void do_calc(FILE *fp_indomain, FILE *fp_input_force, FILE *fp_aveforce, int frame_max, int nstout) ;
-		void gather_Data(FILE *fp_input, FILE *fp_output,int frame_max) ;
+		void do_Gather_Data(Run_Manager mr, FileIO fp) ;
 
 } ;
 

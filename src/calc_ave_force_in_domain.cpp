@@ -206,8 +206,10 @@ void Calc_Ave_Force_In_Domain::do_calc(FILE *fp_indomain, FILE *fp_input_force, 
 	return ;
 }
 
-void Calc_Ave_Force_In_Domain::gather_Data(FILE *fp_input, FILE *fp_output, int frame_max)
+void Calc_Ave_Force_In_Domain::do_Gather_Data(Run_Manager mr, FileIO fp)
 {
+	FILE *fp_input ;
+	FILE *fp_output ;
 	double f[XYZ] ;
 	double f_sum[XYZ] = {} ;
 	double f_ave[XYZ] = {} ;
@@ -215,6 +217,18 @@ void Calc_Ave_Force_In_Domain::gather_Data(FILE *fp_input, FILE *fp_output, int 
 	int frame = 0 ;
 	int in_domain_num = 0 ;
 	int in_domain_num_sum = 0 ;
+
+	if( fp.set_Input_File(1,mr.get_argument(2)) )
+	{
+		fp_input = fp.get_Input_File(1) ;
+	}
+
+	if( fp.set_Output_File(1,mr.get_argument(3)) )
+	{
+		fp_output = fp.get_Output_File(1) ;
+	}
+
+	int frame_max = fp.get_LineNum_Input_File(1) - 1 ;
 
 	while(frame<=frame_max)
 	{
@@ -240,6 +254,7 @@ void Calc_Ave_Force_In_Domain::gather_Data(FILE *fp_input, FILE *fp_output, int 
 		frame++ ;
 
 	}
+
 
 	return ;
 }
