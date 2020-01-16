@@ -1,0 +1,21 @@
+calc_ave_force_in_domain.o: \
+ src_mpi/../header/const.h src_mpi/../header/calc_ave_force_in_domain.h \
+ src_mpi/../header/const.h src_mpi/../header/run_manager.h \
+ src_mpi/../header/enum_manager.h src_mpi/../header/array.h \
+ src_mpi/../header/file.h src_mpi/../header/file.h
+file.o: src_mpi/../header/file.h \
+ src_mpi/../header/const.h
+format_gro.o: src_mpi/../header/const.h \
+ src_mpi/../header/file.h src_mpi/../header/const.h \
+ src_mpi/../header/format_gro.h src_mpi/../header/run_manager.h \
+ src_mpi/../header/enum_manager.h src_mpi/../header/array.h \
+ src_mpi/../header/file.h
+main.o: src_mpi/../header/file.h \
+ src_mpi/../header/const.h src_mpi/../header/run_manager.h \
+ src_mpi/../header/enum_manager.h src_mpi/../header/array.h \
+ src_mpi/../header/file.h
+run_manager.o: src_mpi/../header/run_manager.h \
+ src_mpi/../header/enum_manager.h src_mpi/../header/array.h \
+ src_mpi/../header/file.h src_mpi/../header/const.h \
+ src_mpi/../header/const.h src_mpi/../header/calc_ave_force_in_domain.h \
+ src_mpi/../header/run_manager.h src_mpi/../header/format_gro.h
