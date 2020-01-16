@@ -1,4 +1,4 @@
-OBJS = ./src_mpi/calc_ave_force_in_domain.o ./src_mpi/file.o ./src_mpi/format_gro.o ./src_mpi/main.o ./src_mpi/run_manager.o 
+OBJS = ./src_mpi/calc_ave_force_in_domain.o ./src_mpi/file.o ./src_mpi/format_gro.o ./src_mpi/main.o ./src_mpi/run_manager.o ./src_mpi/timer.o 
 
 main.out : $(OBJS)
 	mpicxx $(OBJS) -o main.out
