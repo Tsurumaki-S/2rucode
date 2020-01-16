@@ -19,34 +19,34 @@ fi
 cat<<EOF>"makefile"
 .SUFFIXES: .cpp .o
 
--include MAKE/objfiles
+-include MAKE/objfiles_mpi
 
 .cpp.o:
-	g++ -c \$< -o \$@
+	mpicxx -c \$< -o \$@
 
--include MAKE/headerdepend
+-include MAKE/headerdepend_mpi
 EOF
 
 ##########################
 ##  write new objfiles  ##
 ##########################
-cat<<EOF>MAKE/objfiles
-OBJS = $(ls ./src/*.cpp | tr "\n" " " | sed -e "s/.cpp/.o/g")
+cat<<EOF>MAKE/objfiles_mpi
+OBJS = $(ls ./src_mpi/*.cpp | tr "\n" " " | sed -e "s/.cpp/.o/g")
 
 ${MAIN}.out : \$(OBJS)
-	g++ \$(OBJS) -o ${MAIN}.out
+	mpicxx \$(OBJS) -o ${MAIN}.out
 EOF
 
 ##############################
 ##  write new headerdepend  ##
 ##############################
-if [ -e "MAKE/headerdepend" ]
+if [ -e "MAKE/headerdepend_mpi" ]
 then
-	rm MAKE/headerdepend
+	rm MAKE/headerdepend_mpi
 fi
-for CPP in $(ls ./src/*.cpp)
+for CPP in $(ls ./src_mpi/*.cpp)
 do
-	g++ -MM ${CPP} | sed -e "s/ .*.cpp//g" >> MAKE/headerdepend
+	mpicxx -MM ${CPP} | sed -e "s/ .*.cpp//g" >> MAKE/headerdepend_mpi
 done
 
 ############
@@ -54,10 +54,10 @@ done
 ############
 make \
 && \
-mv ${MAIN}.out ./bin/2ru
+mv ${MAIN}.out ./bin/2ru_mpi
 
 #######################
 ##  delete .o files  ##
 #######################
-rm ./src/*.o
+rm ./src_mpi/*.o
 
