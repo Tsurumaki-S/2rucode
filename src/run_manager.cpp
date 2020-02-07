@@ -5,6 +5,7 @@
 #include "../header/calc_ave_force_in_domain.h"
 #include "../header/format_gro.h"
 
+/* copy arguments */
 Run_Manager::Run_Manager(int argc, char **argv)
 {
 	argument = ALLOC_MATRIX(char,argc,BUFMAX_CHAR) ;
@@ -14,11 +15,15 @@ Run_Manager::Run_Manager(int argc, char **argv)
 	}
 }
 
+/* select analysis mode */
 bool Run_Manager::loadAnalyMode(const char *mode_char) {
 
-    if (analy_tag.converter.find(mode_char) != analy_tag.converter.end()) {
+    if (analy_tag.converter.find(mode_char) != analy_tag.converter.end())
+	{
         mode = analy_tag.converter[mode_char];
-    } else {
+    }
+	else
+	{
         printf("\n  Error: Incorrect argument.\n\n");
 		exit(1) ;
     }
@@ -26,6 +31,7 @@ bool Run_Manager::loadAnalyMode(const char *mode_char) {
     return true;
 }
 
+/* execute analysis which is selected by "loadAnalyMode" */
 bool Run_Manager::doAnaly(Run_Manager mr, FileIO fp)
 {
 	if(mode==analy_tag.converter["avefrc_indomain"])
@@ -50,6 +56,7 @@ bool Run_Manager::doAnaly(Run_Manager mr, FileIO fp)
 	return true ;
 }
 
+/* debug */
 bool Run_Manager::enum_test_print()
 {
 

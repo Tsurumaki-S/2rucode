@@ -3,7 +3,8 @@
 #include "../header/file.h"
 #include "../header/format_gro.h"
 
-//void Format_Gro::format_Gro(FILE *fp_input, FILE *fp_output, int atom_num_max)
+/* modify gro file format */
+
 void Format_Gro::format_Gro(Run_Manager mr, FileIO fp)
 {
 	if( fp.set_Input_File(1,mr.get_argument(2)) )

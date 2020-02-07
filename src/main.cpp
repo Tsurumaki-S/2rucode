@@ -1,8 +1,6 @@
 #include <stdio.h>
 #include "../header/file.h"
-//#include "../header/format_gro.h"
 #include "../header/run_manager.h"
-//#include "../header/array.h"
 
 int main(int argc, char *argv[])
 {

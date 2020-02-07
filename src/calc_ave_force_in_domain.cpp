@@ -4,6 +4,9 @@
 #include "../header/calc_ave_force_in_domain.h"
 #include "../header/file.h"
 
+/* calclate average force */
+/* calclation is done only when the atom is in the selected domain */
+
 void Calc_Ave_Force_In_Domain::do_Calc_Ave_Force_In_Domain(Run_Manager mr, FileIO fp)
 {
 	Calc_Ave_Force_In_Domain analysis ;
