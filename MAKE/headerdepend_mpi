@@ -18,6 +18,12 @@ run_manager.o: src_mpi/../header/run_manager.h \
  src_mpi/../header/enum_manager.h src_mpi/../header/array.h \
  src_mpi/../header/file.h src_mpi/../header/const.h \
  src_mpi/../header/const.h src_mpi/../header/calc_ave_force_in_domain.h \
- src_mpi/../header/run_manager.h src_mpi/../header/format_gro.h
+ src_mpi/../header/run_manager.h src_mpi/../header/format_gro.h \
+ src_mpi/../header/test_mpi.h
+test_mpi.o: src_mpi/../header/const.h \
+ src_mpi/../header/file.h src_mpi/../header/const.h \
+ src_mpi/../header/test_mpi.h src_mpi/../header/run_manager.h \
+ src_mpi/../header/enum_manager.h src_mpi/../header/array.h \
+ src_mpi/../header/file.h
 timer.o: src_mpi/../header/timer.h \
  src_mpi/../header/const.h

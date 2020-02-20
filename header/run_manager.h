@@ -1,5 +1,5 @@
-#ifndef __RUN_NAMAGER__
-#define __RUN_NAMAGER__
+#ifndef __RUN_MANAGER__
+#define __RUN_MANAGER__
 #include "enum_manager.h"
 #include "array.h"
 #include "file.h"
@@ -8,7 +8,7 @@ class Run_Manager
 {
 	private:
 		/* add new commandline argument this line. */
-		ENUM(analy_tag, avefrc_indomain, avefrc_gather, format_gro)
+		ENUM(analy_tag, avefrc_indomain, avefrc_gather, format_gro, test_mpi)
 		analy_tag::type mode ;
 		char **argument ;
 
