@@ -5,6 +5,7 @@
 #include "../header/const.h"
 #include "../header/calc_ave_force_in_domain.h"
 #include "../header/format_gro.h"
+#include "../header/test_mpi.h"
 
 Run_Manager::Run_Manager(int argc, char **argv)
 {
@@ -29,14 +30,14 @@ bool Run_Manager::loadAnalyMode(const char *mode_char) {
 
 bool Run_Manager::doAnaly(Run_Manager mr, FileIO fp)
 {
+	int id, proc_num ;
+	MPI_Comm_rank(MPI_COMM_WORLD,&id) ;
+	MPI_Comm_size(MPI_COMM_WORLD,&proc_num) ;
+
 	if(mode==analy_tag.converter["avefrc_indomain"])
 	{
 		printf("\nmode = avefrc_indomain (%d)\n",mode) ;
 
-		/* MPI DEBUG */
-		int id, proc_num ;
-		MPI_Comm_rank(MPI_COMM_WORLD,&id) ;
-		MPI_Comm_size(MPI_COMM_WORLD,&proc_num) ;
 		printf("\n\n@doAnaly-1 process ID = %d/%d\n\n",id,proc_num) ;
 		/* MPI DEBUG */
 
@@ -59,6 +60,12 @@ bool Run_Manager::doAnaly(Run_Manager mr, FileIO fp)
 		printf("\nmode = format_gro (%d)\n"     ,mode) ;
 		Format_Gro analy ;
 		analy.format_Gro(mr,fp) ;
+	}
+	else if (mode==analy_tag.converter["test_mpi"])
+	{
+		if(id==0) printf("\nmode = test_mpi (%d)\n",mode) ;
+		Test_Mpi analy ;
+		analy.do_test(mr,fp) ;
 	}
 
 	return true ;
