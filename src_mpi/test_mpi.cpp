@@ -40,6 +40,14 @@ void Test_Mpi::do_test(Run_Manager mr, FileIO fp)
 				fgets(one_line,1024,fp_input) ;
 				fprintf(fp_output,"Input file contents :\n%s\n",one_line ) ;
 			}
+
+			for(int i = 0;i<10000000000;i++)
+			{
+				int dummy ;
+				dummy = id + i ;
+				dummy = id - i ;
+				dummy = id * i ;
+			}
 		}
 	}
 
