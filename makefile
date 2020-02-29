@@ -1,8 +1,8 @@
 .SUFFIXES: .cpp .o
 
--include MAKE/objfiles_mpi
+-include MAKE/objfiles
 
 .cpp.o:
-	mpicxx -c $< -o $@
+	g++ -c $< -o $@
 
--include MAKE/headerdepend_mpi
+-include MAKE/headerdepend

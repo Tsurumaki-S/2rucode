@@ -1,4 +1,4 @@
-OBJS = ./src/calc_ave_force_in_domain.o ./src/file.o ./src/format_gro.o ./src/main.o ./src/run_manager.o 
+OBJS = ./src/calc_ave_force_in_domain.o ./src/file.o ./src/format_gro.o ./src/main.o ./src/run_manager.o ./src/timer.o 
 
 main.out : $(OBJS)
 	g++ $(OBJS) -o main.out
