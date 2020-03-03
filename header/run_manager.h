@@ -8,7 +8,7 @@ class Run_Manager
 {
 	private:
 		/* add new commandline argument this line. */
-		ENUM(analy_tag, avefrc_indomain, avefrc_gather, format_gro, test_mpi)
+		ENUM(analy_tag, avefrc_indomain, avefrc_gather, format_gro, ave_aved_value, test_mpi)
 		analy_tag::type mode ;
 		char **argument ;
 

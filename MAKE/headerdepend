@@ -1,0 +1,23 @@
+ave_aved_value.o: src/../header/const.h \
+ src/../header/ave_aved_value.h src/../header/const.h \
+ src/../header/run_manager.h src/../header/enum_manager.h \
+ src/../header/array.h src/../header/file.h src/../header/file.h
+calc_ave_force_in_domain.o: \
+ src/../header/const.h src/../header/calc_ave_force_in_domain.h \
+ src/../header/const.h src/../header/run_manager.h \
+ src/../header/enum_manager.h src/../header/array.h src/../header/file.h \
+ src/../header/file.h
+file.o: src/../header/file.h src/../header/const.h
+format_gro.o: src/../header/const.h \
+ src/../header/file.h src/../header/const.h src/../header/format_gro.h \
+ src/../header/run_manager.h src/../header/enum_manager.h \
+ src/../header/array.h src/../header/file.h
+main.o: src/../header/file.h src/../header/const.h \
+ src/../header/run_manager.h src/../header/enum_manager.h \
+ src/../header/array.h src/../header/file.h src/../header/timer.h
+run_manager.o: src/../header/run_manager.h \
+ src/../header/enum_manager.h src/../header/array.h src/../header/file.h \
+ src/../header/const.h src/../header/const.h \
+ src/../header/calc_ave_force_in_domain.h src/../header/run_manager.h \
+ src/../header/format_gro.h src/../header/ave_aved_value.h
+timer.o: src/../header/timer.h src/../header/const.h

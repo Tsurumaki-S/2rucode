@@ -4,6 +4,7 @@
 #include "../header/const.h"
 #include "../header/calc_ave_force_in_domain.h"
 #include "../header/format_gro.h"
+#include "../header/ave_aved_value.h"
 
 /* copy arguments */
 Run_Manager::Run_Manager(int argc, char **argv)
@@ -51,6 +52,12 @@ bool Run_Manager::doAnaly(Run_Manager mr, FileIO fp)
 		printf("\nmode = format_gro (%d)\n"     ,mode) ;
 		Format_Gro analy ;
 		analy.format_Gro(mr,fp) ;
+	}
+	else if (mode==analy_tag.converter["ave_aved_value"])
+	{
+		printf("\nmode = ave_aved_value (%d)\n"     ,mode) ;
+		Ave_Aved_Value analy ;
+		analy.do_Ave_Aved_Value(mr,fp) ;
 	}
 
 	return true ;
