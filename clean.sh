@@ -20,4 +20,24 @@ for DELETE_DIR in "bin" "MAKE" ;do
 
 done
 
+for DELETE_FILE in "makefile" ;do
+
+	if [ -e "${DELETE_FILE}" ];then
+		rm ${DELETE_FILE} \
+		&& \
+		cat<<-EOS
+
+		"${DELETE_FILE}" was deleted without issues.
+		EOS
+
+	else
+		cat<<-EOS
+
+		There is no file named "${DELETE_FILE}".
+		EOS
+
+	fi
+
+done
+
 echo ""
