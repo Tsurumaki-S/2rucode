@@ -1,7 +1,8 @@
 #!/bin/bash
 
 COMPILER="g++"
-COMPILE_OPTION="-std=c++11"
+COMPILE_OPTION=""
+##COMPILE_OPTION="-std=c++11"
 
 MAIN="main"
 
