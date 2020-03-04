@@ -1,8 +1,9 @@
 #include <stdio.h>
 #include <mpi.h>
 #include <vector>
-#include <thread>
-#include <chrono>
+//#include <thread>
+//#include <chrono>
+#include <unistd.h>
 #include "../header/const.h"
 #include "../header/file.h"
 #include "../header/test_mpi.h"
@@ -52,7 +53,8 @@ void Test_Mpi::do_test(Run_Manager mr, FileIO fp)
 			}
 		}
 		 /* sleep for 20 seconds */
-		 std::this_thread::sleep_for(std::chrono::seconds(20));
+		 sleep(20);
+		 //std::this_thread::sleep_for(std::chrono::seconds(20));
 	}
 
 
