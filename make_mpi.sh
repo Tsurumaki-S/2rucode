@@ -1,5 +1,8 @@
 #!/bin/bash
 
+COMPILER="mpicxx"
+COMPILE_OPTION="-std=c++11"
+
 MAIN="main"
 
 ##########################
@@ -22,7 +25,7 @@ cat<<EOF>"makefile"
 -include MAKE/objfiles_mpi
 
 .cpp.o:
-	mpicxx -c \$< -o \$@
+	${COMPILER} ${COMPILE_OPTION} -c \$< -o \$@
 
 -include MAKE/headerdepend_mpi
 EOF
@@ -34,7 +37,7 @@ cat<<EOF>MAKE/objfiles_mpi
 OBJS = $(ls ./src_mpi/*.cpp | tr "\n" " " | sed -e "s/.cpp/.o/g")
 
 ${MAIN}.out : \$(OBJS)
-	mpicxx \$(OBJS) -o ${MAIN}.out
+	${COMPILER} ${COMPILE_OPTION} \$(OBJS) -o ${MAIN}.out
 EOF
 
 ##############################
@@ -46,7 +49,7 @@ then
 fi
 for CPP in $(ls ./src_mpi/*.cpp)
 do
-	mpicxx -MM ${CPP} | sed -e "s/ .*.cpp//g" >> MAKE/headerdepend_mpi
+	${COMPILER} ${COMPILE_OPTION} -MM ${CPP} | sed -e "s/ .*.cpp//g" >> MAKE/headerdepend_mpi
 done
 
 ############

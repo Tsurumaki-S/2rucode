@@ -1,6 +1,8 @@
 #include <stdio.h>
 #include <mpi.h>
 #include <vector>
+#include <thread>
+#include <chrono>
 #include "../header/const.h"
 #include "../header/file.h"
 #include "../header/test_mpi.h"
@@ -41,7 +43,7 @@ void Test_Mpi::do_test(Run_Manager mr, FileIO fp)
 				fprintf(fp_output,"Input file contents :\n%s\n",one_line ) ;
 			}
 
-			for(int i = 0;i<10000000000;i++)
+			for(int i = 0;i<10000000;i++)
 			{
 				int dummy ;
 				dummy = id + i ;
@@ -49,6 +51,8 @@ void Test_Mpi::do_test(Run_Manager mr, FileIO fp)
 				dummy = id * i ;
 			}
 		}
+		 /* sleep for 20 seconds */
+		 std::this_thread::sleep_for(std::chrono::seconds(20));
 	}
 
 

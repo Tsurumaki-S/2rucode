@@ -1,5 +1,8 @@
 #!/bin/bash
 
+COMPILER="g++"
+COMPILE_OPTION="-std=c++11"
+
 MAIN="main"
 
 ##########################
@@ -22,7 +25,7 @@ cat<<EOF>"makefile"
 -include MAKE/objfiles
 
 .cpp.o:
-	g++ -c \$< -o \$@
+	${COMPILER} ${COMPILE_OPTION} -c \$< -o \$@
 
 -include MAKE/headerdepend
 EOF
@@ -34,7 +37,7 @@ cat<<EOF>MAKE/objfiles
 OBJS = $(ls ./src/*.cpp | tr "\n" " " | sed -e "s/.cpp/.o/g")
 
 ${MAIN}.out : \$(OBJS)
-	g++ \$(OBJS) -o ${MAIN}.out
+	${COMPILER} ${COMPILE_OPTION} \$(OBJS) -o ${MAIN}.out
 EOF
 
 ##############################
@@ -46,7 +49,7 @@ then
 fi
 for CPP in $(ls ./src/*.cpp)
 do
-	g++ -MM ${CPP} | sed -e "s/ .*.cpp//g" >> MAKE/headerdepend
+	${COMPILER} ${COMPILE_OPTION} -MM ${CPP} | sed -e "s/ .*.cpp//g" >> MAKE/headerdepend
 done
 
 ############
