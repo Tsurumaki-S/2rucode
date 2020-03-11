@@ -4,8 +4,10 @@
 //#include <thread>
 //#include <chrono>
 #include <unistd.h>
+#include <omp.h>
 #include "../header/const.h"
 #include "../header/file.h"
+#include "../header/common_function.h"
 #include "../header/test_mpi.h"
 
 void Test_Mpi::do_test(Run_Manager mr, FileIO fp)
@@ -21,11 +23,16 @@ void Test_Mpi::do_test(Run_Manager mr, FileIO fp)
 	/* MPI process check */
 	int id, proc_num ;
 
-	/* show status */
-	detect_and_show_proc(&fp, &id, &proc_num) ;
+	/* show job information ( process and thread ) */
+	show_job_info(&fp, &id, &proc_num) ;
 
 	/* test calclation with MPI */
-	test_mpi_reduce(fp_output,id,proc_num);
+	test_calc_mpi(fp_output,id,proc_num);
+	MPI_Barrier(MPI_COMM_WORLD) ;
+
+	/* test calclation with hybrid parallel (MPI and OpenMP) */
+	test_calc_mpi_openmp_hybrid(fp_output,id,proc_num);
+	MPI_Barrier(MPI_COMM_WORLD) ;
 	
 	/* sleep for 20 seconds */
 	if(id==0) printf("Now sleeping for 20 seconds.") ;
@@ -38,7 +45,7 @@ void Test_Mpi::do_test(Run_Manager mr, FileIO fp)
 	return ;
 }
 
-void Test_Mpi::detect_and_show_proc(FileIO *fp, int *id, int *proc_num)
+void Test_Mpi::show_job_info(FileIO *fp, int *id, int *proc_num)
 {
 	MPI_Comm_rank(MPI_COMM_WORLD,id) ;
 	MPI_Comm_size(MPI_COMM_WORLD,proc_num) ;
@@ -46,10 +53,18 @@ void Test_Mpi::detect_and_show_proc(FileIO *fp, int *id, int *proc_num)
 	if( *id == 0 )
 	{
 		show_proc_info(fp, *proc_num) ;
+		show_thread_info(fp) ;
+		show_thread_per_proc(fp) ;
 		show_file_info(fp) ;
 	}
 
 	show_host_info(fp,*id,*proc_num) ;
+
+	#pragma omp parallel for
+	for(int i=0;i<4;i++)
+	{
+		printf("\nproc# %3d\nthread# %3d\n",*id,omp_get_thread_num());
+	}
 
 	return ;
 }
@@ -61,9 +76,41 @@ void Test_Mpi::show_proc_info(FileIO *fp, int proc_num)
 
 	FILE *fp_output = fp->get_Output_File(1) ;
 
-	n = snprintf(msg,BUFMAX_CHAR_LARGE,"Total %d [process] detected.\n\n",proc_num) ;
-	printf(msg) ; fprintf(fp_output,msg) ;
+	n = snprintf(msg,BUFMAX_CHAR_LARGE,"Total %4d [process] detected.\n\n",proc_num) ;
+	print_std_and_fp(msg,fp_output);
+
+	return ;
 }
+
+void Test_Mpi::show_thread_info(FileIO *fp)
+{
+	int n;
+	char msg[BUFMAX_CHAR_LARGE] ;
+
+	FILE *fp_output = fp->get_Output_File(1) ;
+
+	n = snprintf(msg,BUFMAX_CHAR_LARGE,"Total %4d [thread] detected.\n\n",omp_get_max_threads()) ;
+	print_std_and_fp(msg,fp_output);
+
+	return ;
+}
+
+void Test_Mpi::show_thread_per_proc(FileIO *fp)
+{
+	FILE *fp_output = fp->get_Output_File(1) ;
+
+	int proc_num ;
+	MPI_Comm_size(MPI_COMM_WORLD,&proc_num) ;
+	int thread_num = omp_get_max_threads() ;
+	int thread_pre_proc = thread_num / proc_num ;
+
+	char msg[BUFMAX_CHAR_LARGE] ;
+	int n = snprintf(msg,BUFMAX_CHAR_LARGE,"  ==> %4d [thread/process]\n\n",thread_pre_proc) ;
+	print_std_and_fp(msg,fp_output);
+
+	return ;
+}
+
 
 void Test_Mpi::show_file_info(FileIO *fp)
 {
@@ -74,10 +121,10 @@ void Test_Mpi::show_file_info(FileIO *fp)
 	FILE *fp_input  = fp->get_Input_File(1) ;
 
 	n = snprintf(msg,BUFMAX_CHAR_LARGE,"Input  file = %s\n",fp->get_Input_FileName(1)) ;
-	printf(msg) ; fprintf(fp_output,msg) ;
+	print_std_and_fp(msg,fp_output);
 
 	n = snprintf(msg,BUFMAX_CHAR_LARGE,"Output file = %s\n\n",fp->get_Output_FileName(1)) ;
-	printf(msg) ; fprintf(fp_output,msg) ;
+	print_std_and_fp(msg,fp_output);
 
 	/* copy 1st line */
 	for(int i=0;i<1;i++)
@@ -90,34 +137,42 @@ void Test_Mpi::show_file_info(FileIO *fp)
 
 void Test_Mpi::show_host_info(FileIO *fp, int id, int proc_num)
 {
-	char **hostnames      = ALLOC_MATRIX(char,proc_num,BUFMAX_CHAR_LARGE) ;
-	char **temp_hostname  = ALLOC_MATRIX(char,proc_num,BUFMAX_CHAR_LARGE) ;
-	char **ipaddress      = ALLOC_MATRIX(char,proc_num,BUFMAX_CHAR_LARGE) ;
-	char **temp_ipaddress = ALLOC_MATRIX(char,proc_num,BUFMAX_CHAR_LARGE) ;
+	/* make temporary file name */
+	//char tmp_name[L_tmpnam+1];
+	//tmpnam(tmp_name);
+	char tmp_name[]={"tmp.XXXXXXXXXX"} ;
+	mkstemp(tmp_name) ;
 
-	char temp_name[BUFMAX_CHAR_LARGE] ;
-	char temp_command[BUFMAX_CHAR_LARGE] ;
 	int n ;
-	n = snprintf(temp_name,BUFMAX_CHAR_LARGE,"temp_%05d.txt",id) ;
+	char tmp_command[BUFMAX_CHAR_LARGE] ;
 
 	/* search hostname */
-	n = snprintf(temp_command,BUFMAX_CHAR_LARGE,"hostname > temp_%05d.txt",id) ;
-	system(temp_command) ;
+	n = snprintf(tmp_command,BUFMAX_CHAR_LARGE,"hostname > %s",tmp_name) ;
+	system(tmp_command) ;
 
 	/* search IP address */
-	n = snprintf(temp_command,BUFMAX_CHAR_LARGE,"host $(hostname) >> temp_%05d.txt",id) ;
-	system(temp_command) ;
+	n = snprintf(tmp_command,BUFMAX_CHAR_LARGE,"host $(hostname) >> %s",tmp_name) ;
+	system(tmp_command) ;
 
-	/* get hostname and IP address */
-	FILE *fp_temp=fopen(temp_name,"r") ;
-	fgets(temp_hostname[id] ,BUFMAX_CHAR_LARGE,fp_temp) ;
-	fgets(temp_ipaddress[id],BUFMAX_CHAR_LARGE,fp_temp) ;
-	fclose(fp_temp) ;
-	remove(temp_name) ;
+	/* set info from temporary files to arrays */
+	FILE *fp_tmp;
+	if( (fp_tmp=fopen(tmp_name,"r")) == NULL )
+	{
+		fprintf(stderr,"\nMaking temporary files failed.\n") ;
+		exit(EXIT_FAILURE);
+	}
+	char **hostnames     = ALLOC_MATRIX(char,proc_num,BUFMAX_CHAR_LARGE) ;
+	char **tmp_hostname  = ALLOC_MATRIX(char,proc_num,BUFMAX_CHAR_LARGE) ;
+	char **ipaddress     = ALLOC_MATRIX(char,proc_num,BUFMAX_CHAR_LARGE) ;
+	char **tmp_ipaddress = ALLOC_MATRIX(char,proc_num,BUFMAX_CHAR_LARGE) ;
+	fgets(tmp_hostname[id] ,BUFMAX_CHAR_LARGE,fp_tmp) ;
+	fgets(tmp_ipaddress[id],BUFMAX_CHAR_LARGE,fp_tmp) ;
+	fclose(fp_tmp) ;
+	remove(tmp_name) ;
 
 	/* gather data from ench proc to proc No.0 */
-	MPI_Gather(&temp_hostname[id][0],BUFMAX_CHAR_LARGE,MPI_CHAR,&hostnames[id][0],BUFMAX_CHAR_LARGE,MPI_CHAR,0,MPI_COMM_WORLD) ;
-	MPI_Gather(&temp_ipaddress[id][0],BUFMAX_CHAR_LARGE,MPI_CHAR,&ipaddress[id][0],BUFMAX_CHAR_LARGE,MPI_CHAR,0,MPI_COMM_WORLD) ;
+	MPI_Gather(&tmp_hostname[id][0],BUFMAX_CHAR_LARGE,MPI_CHAR,&hostnames[id][0],BUFMAX_CHAR_LARGE,MPI_CHAR,0,MPI_COMM_WORLD) ;
+	MPI_Gather(&tmp_ipaddress[id][0],BUFMAX_CHAR_LARGE,MPI_CHAR,&ipaddress[id][0],BUFMAX_CHAR_LARGE,MPI_CHAR,0,MPI_COMM_WORLD) ;
 
 	/* output */
 	if(id==0)
@@ -135,7 +190,7 @@ void Test_Mpi::show_host_info(FileIO *fp, int id, int proc_num)
 }
 
 /* test calclation with MPI */
-void Test_Mpi::test_mpi_reduce(FILE *fp_output, int id, int proc_num)
+void Test_Mpi::test_calc_mpi(FILE *fp_output, int id, int proc_num)
 {
 	int test_calc     = id+1 ;
 	int test_calc_sum = -1 ;
@@ -149,26 +204,26 @@ void Test_Mpi::test_mpi_reduce(FILE *fp_output, int id, int proc_num)
 		int n ;
 
 		n = snprintf(msg,BUFMAX_CHAR_LARGE,"\nMPI TEST : ") ;
-		printf(msg) ; fprintf(fp_output,msg) ;
+		print_std_and_fp(msg,fp_output);
 
 		if( test_calc_sum == test_calc_sum__true_value )
 		{
 			n = snprintf(msg,BUFMAX_CHAR_LARGE,"OK\n") ;
-			printf(msg) ; fprintf(fp_output,msg) ;
+			print_std_and_fp(msg,fp_output);
 		}
 		else if( test_calc_sum == -1 )
 		{
 			n = snprintf(msg,BUFMAX_CHAR_LARGE,"ERROR!\n") ;
-			printf(msg) ; fprintf(fp_output,msg) ;
+			print_std_and_fp(msg,fp_output);
 			n = snprintf(msg,BUFMAX_CHAR_LARGE,"MPI function \"MPI_Reduce\" can't execute normally.\n") ;
-			printf(msg) ; fprintf(fp_output,msg) ;
+			print_std_and_fp(msg,fp_output);
 		}
 		else
 		{
 			n = snprintf(msg,BUFMAX_CHAR_LARGE,"ERROR!\n") ;
-			printf(msg) ; fprintf(fp_output,msg) ;
+			print_std_and_fp(msg,fp_output);
 			n = snprintf(msg,BUFMAX_CHAR_LARGE,"MPI function \"MPI_Reduce\" can't execute normally.\n") ;
-			printf(msg) ; fprintf(fp_output,msg) ;
+			print_std_and_fp(msg,fp_output);
 		}
 
 	}
@@ -176,3 +231,8 @@ void Test_Mpi::test_mpi_reduce(FILE *fp_output, int id, int proc_num)
 	return ;
 }
 
+/* test calclation with hybrid parallel (MPI and OpenMP) */
+void Test_Mpi::test_calc_mpi_openmp_hybrid(FILE *fp_output, int id, int proc_num)
+{
+	return ;
+}
